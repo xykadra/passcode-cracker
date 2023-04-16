@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:passcode_cracker/pages/game_page.dart';
 import 'package:passcode_cracker/testing.dart';
 import 'package:passcode_cracker/welcome_page.dart';
 
@@ -14,7 +15,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: const WelcomePage(),
+      home: WelcomePage(),
     );
   }
 }

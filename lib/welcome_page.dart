@@ -1,7 +1,7 @@
 import "dart:math";
 
 import "package:flutter/material.dart";
-import "package:passcode_cracker/game_page.dart";
+import 'package:passcode_cracker/pages/game_page.dart';
 import "package:passcode_cracker/game_page2.dart";
 
 class WelcomePage extends StatefulWidget {
@@ -38,7 +38,7 @@ class _WelcomePageState extends State<WelcomePage> {
                 Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => GamePage2(),
+                      builder: (context) => GamePage(),
                     ));
               },
               child: Container(
