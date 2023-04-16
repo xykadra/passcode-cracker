@@ -1,6 +1,7 @@
 import "dart:math";
 
 import "package:audioplayers/audioplayers.dart";
+import "package:awesome_snackbar_content/awesome_snackbar_content.dart";
 import "package:flutter/material.dart";
 import "package:flutter/services.dart";
 import "package:google_fonts/google_fonts.dart";
@@ -41,7 +42,9 @@ class _GamePageState extends State<GamePage> {
       Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => WinPage(),
+            builder: (context) => WinPage(
+              randomNumbers: randomNumbers,
+            ),
           ));
     }
   }
@@ -49,13 +52,16 @@ class _GamePageState extends State<GamePage> {
   void addBodyElements(String num1, String num2, String num3, String num4,
       int correctNumbers, int correctSpots, int counterForWidgets) {
     counterForWidgets < 9
-        ? bodyElements.add(UtilForAdditionalWidgets(
-            num1: num1,
-            num2: num2,
-            num3: num3,
-            num4: num4,
-            correctNumbers: correctNumbers,
-            correctSpots: correctSpots))
+        ? bodyElements.add(Padding(
+          padding: const EdgeInsets.only(bottom:5.0),
+          child: UtilForAdditionalWidgets(
+              num1: num1,
+              num2: num2,
+              num3: num3,
+              num4: num4,
+              correctNumbers: correctNumbers,
+              correctSpots: correctSpots),
+        ))
         : _navigateToGameOverPage(randomNumbers);
   }
 
@@ -96,6 +102,11 @@ class _GamePageState extends State<GamePage> {
   final TextEditingController num2Controller = TextEditingController();
   final TextEditingController num3Controller = TextEditingController();
   final TextEditingController num4Controller = TextEditingController();
+  //focus nodes for input fields
+  FocusNode _focusNode1 = FocusNode();
+  FocusNode _focusNode2 = FocusNode();
+  FocusNode _focusNode3 = FocusNode();
+  FocusNode _focusNode4 = FocusNode();
 
   Map<int, int> checkNumbers(List<int> inputNumbers, List<int> randomNumbers) {
     int correctNumbers = 0;
@@ -128,6 +139,36 @@ class _GamePageState extends State<GamePage> {
         AudioPlayer().play(AssetSource("right_spot.mp3"), volume: 50);
       });
     }
+  }
+
+  void _handlingOfEmptyFields(String message) {
+    final materialBanner = MaterialBanner(
+      /// need to set following properties for best effect of awesome_snackbar_content
+      elevation: 0,
+      backgroundColor: Colors.transparent,
+      forceActionsBelow: true,
+      content: AwesomeSnackbarContent(
+        color: Colors.red[350],
+        title: 'Oh Hey!!',
+
+        message: message,
+        messageFontSize: 18,
+
+        /// change contentType to ContentType.success, ContentType.warning or ContentType.help for variants
+        contentType: ContentType.failure,
+        // to configure for material banner
+        inMaterialBanner: true,
+      ),
+      actions: const [SizedBox.shrink()],
+    );
+
+    ScaffoldMessenger.of(context)
+      ..hideCurrentMaterialBanner()
+      ..showMaterialBanner(materialBanner);
+  }
+
+  bool hasTwoSameNumbers(int a, int b, int c, int d) {
+    return a == b || a == c || a == d || b == c || b == d || c == d;
   }
 
   Widget build(BuildContext context) {
@@ -215,7 +256,7 @@ class _GamePageState extends State<GamePage> {
                                     height: 10,
                                   ),
                                   Text(
-                                    "1. DO NOT ENTER TWO SAME NUMBERS (Exception still not handled (too much work))",
+                                    "1. DO NOT ENTER TWO SAME NUMBERS",
                                     style: GoogleFonts.inter(
                                         color: Colors.black, fontSize: 15),
                                   ),
@@ -275,6 +316,7 @@ class _GamePageState extends State<GamePage> {
                       num4Controller.text = "";
                       inputNumbers.clear();
                       counterForTries = 9;
+                      counterForWidgets = 0;
                     });
                   },
                   child: Container(
@@ -333,6 +375,11 @@ class _GamePageState extends State<GamePage> {
                     child: TextFormField(
                       textInputAction: TextInputAction.next,
                       controller: num1Controller,
+                      focusNode: _focusNode1,
+                      onChanged: (String value) {
+                        _focusNode1.unfocus();
+                        FocusScope.of(context).requestFocus(_focusNode2);
+                      },
                       style: TextStyle(
                           color: Colors.black,
                           fontSize: 25,
@@ -363,6 +410,11 @@ class _GamePageState extends State<GamePage> {
                     child: TextFormField(
                       textInputAction: TextInputAction.next,
                       controller: num2Controller,
+                      focusNode: _focusNode2,
+                      onChanged: (String value) {
+                        _focusNode2.unfocus();
+                        FocusScope.of(context).requestFocus(_focusNode3);
+                      },
                       style: TextStyle(
                           color: Colors.black,
                           fontSize: 25,
@@ -392,6 +444,11 @@ class _GamePageState extends State<GamePage> {
                     child: TextFormField(
                       textInputAction: TextInputAction.next,
                       controller: num3Controller,
+                      focusNode: _focusNode3,
+                      onChanged: (String value) {
+                        _focusNode3.unfocus();
+                        FocusScope.of(context).requestFocus(_focusNode4);
+                      },
                       style: TextStyle(
                           color: Colors.black,
                           fontSize: 25,
@@ -421,6 +478,10 @@ class _GamePageState extends State<GamePage> {
                     child: TextFormField(
                       //textInputAction: TextInputAction.next,
                       controller: num4Controller,
+                      focusNode: _focusNode4,
+                      onChanged: (String value) {
+                        _focusNode4.unfocus();
+                      },
                       style: TextStyle(
                           color: Colors.black,
                           fontSize: 25,
@@ -454,32 +515,54 @@ class _GamePageState extends State<GamePage> {
               child: GestureDetector(
                 onTap: () {
                   setState(() {
-                    //counter for widgets
-                    counterForWidgets++;
-                    counterForTries--;
-
-                    //making visiable correct numbers and correct spots
-                    colorOfText = Colors.black;
                     //clearing list input numbers and then adding new numbers to it
                     inputNumbers.clear();
-                    inputNumbers.add(int.parse(num1Controller.text));
-                    inputNumbers.add(int.parse(num2Controller.text));
-                    inputNumbers.add(int.parse(num3Controller.text));
-                    inputNumbers.add(int.parse(num4Controller.text));
-                    //function that checks input and returing correct numbers and correct spots
-                    checkInput();
+                    //my way of handling parse error
+                    if (num1Controller.text == "" ||
+                        num2Controller.text == "" ||
+                        num3Controller.text == "" ||
+                        num4Controller.text == "") {
+                      _handlingOfEmptyFields("You didn't inputed some values");
+                    } else if (hasTwoSameNumbers(
+                            int.parse(num1Controller.text),
+                            int.parse(num2Controller.text),
+                            int.parse(num3Controller.text),
+                            int.parse(num4Controller.text)) ==
+                        true) {
+                      _handlingOfEmptyFields(
+                          "There are two or more same numbers!");
+                    } else if (num1Controller.text == "0" ||
+                        num2Controller.text == "0" ||
+                        num3Controller.text == "0" ||
+                        num4Controller.text == "0") {
+                      _handlingOfEmptyFields("Somewhere zero?");
+                    } else {
+                      //counter for widgets
+                      counterForWidgets++;
+                      //making visiable correct numbers and correct spots
+                      counterForTries--;
+                      colorOfText = Colors.black;
+                      inputNumbers.add(int.parse(num1Controller.text));
+                      inputNumbers.add(int.parse(num2Controller.text));
+                      inputNumbers.add(int.parse(num3Controller.text));
+                      inputNumbers.add(int.parse(num4Controller.text));
+                      checkInput();
+                      addBodyElements(
+                        num1Controller.text,
+                        num2Controller.text,
+                        num3Controller.text,
+                        num4Controller.text,
+                        result.keys.first,
+                        result.values.first,
+                        counterForWidgets,
+                      );
+                    }
+
                     _checkForSpotSound(result.values.first);
                     //adding widgets
-                    addBodyElements(
-                      num1Controller.text,
-                      num2Controller.text,
-                      num3Controller.text,
-                      num4Controller.text,
-                      result.keys.first,
-                      result.values.first,
-                      counterForWidgets,
-                    );
+
                     _chekForWin(result.keys.first, result.values.first);
+                    //function that checks input and returing correct numbers and correct spots
 
                     //making forms clear
                     num1Controller.text = "";
@@ -487,13 +570,6 @@ class _GamePageState extends State<GamePage> {
                     num3Controller.text = "";
                     num4Controller.text = "";
                   });
-                },
-                onDoubleTap: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => EasterEggPage(),
-                      ));
                 },
                 child: Container(
                   height: 30,
@@ -524,6 +600,15 @@ class _GamePageState extends State<GamePage> {
             //       fontWeight: FontWeight.bold),
             // ),
             // Text(counterForWidgets.toString()),
+            // ElevatedButton(
+            //     onPressed: () {
+            //       Navigator.push(
+            //           context,
+            //           MaterialPageRoute(
+            //             builder: (context) => WelcomePage(),
+            //           ));
+            //     },
+            //     child: Text("Go back"))
           ],
         ),
       )),

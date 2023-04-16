@@ -16,30 +16,43 @@ class GameOverPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        backgroundColor: Colors.deepPurple,
+        backgroundColor: Colors.white,
         body: Center(
           child: Container(
             padding: EdgeInsets.all(15),
             height: 350,
             width: 300,
-            decoration: BoxDecoration(color: Colors.black),
+            decoration: BoxDecoration(color: Colors.grey[350]),
             child: Column(
               children: [
                 Text(
                   "GAME OVER",
-                  style: GoogleFonts.inter(color: Colors.white, fontSize: 40),
+                  style: GoogleFonts.inter(
+                      color: Colors.black,
+                      fontSize: 40,
+                      fontWeight: FontWeight.bold),
                 ),
                 Lottie.asset("lib/assets/game_over.json", height: 150),
                 GestureDetector(
                   onTap: () {
                     showDialog(
-                        context: context, builder: (context) => AlertDialog(
-                          icon: Icon(Icons.error),
-                          title: Text("Numbers"),
-                          content: Text(randomNumbers.toString(), style: GoogleFonts.interTight(color: Colors.red, fontSize: 32),),
-
-
-                        ));
+                        context: context,
+                        builder: (context) => AlertDialog(
+                              icon: Icon(Icons.error),
+                              title: Text("Your numbers were"),
+                              content: Padding(
+                                padding: const EdgeInsets.only(left: 75.0),
+                                child: Text(
+                                  randomNumbers
+                                      .toString()
+                                      .replaceAll('[', '')
+                                      .replaceAll(']', '')
+                                      .replaceAll(',', ""),
+                                  style: GoogleFonts.interTight(
+                                      color: Colors.black, fontSize: 32),
+                                ),
+                              ),
+                            ));
                   },
                   child: Container(
                     height: 30,
@@ -51,7 +64,7 @@ class GameOverPage extends StatelessWidget {
                       child: Text(
                         "See numbers",
                         style: GoogleFonts.inter(
-                            color: Colors.black,
+                            color: Colors.white,
                             fontSize: 15,
                             fontWeight: FontWeight.bold),
                       ),

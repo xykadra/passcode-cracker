@@ -1,3 +1,4 @@
+import 'package:awesome_snackbar_content/awesome_snackbar_content.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lottie/lottie.dart';
@@ -10,63 +11,92 @@ class TestingPage extends StatefulWidget {
 }
 
 class _TestingPageState extends State<TestingPage> {
-  @override
+  TextEditingController _controller1 = TextEditingController();
+  TextEditingController _controller2 = TextEditingController();
+  FocusNode _focusNode1 = FocusNode();
+  FocusNode _focusNode2 = FocusNode();
+
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Scaffold(
-          body: Center(
-        child: Container(
-          padding: EdgeInsets.all(15),
-          height: 350,
-          width: 300,
-          decoration: BoxDecoration(color: Colors.black),
-          child: Column(
-            children: [
-              Text(
-                "GAME OVER",
-                style: GoogleFonts.inter(color: Colors.white, fontSize: 40),
-              ),
-              Lottie.asset("lib/assets/game_over.json", height: 150),
-              Container(
-                height: 30,
-                width: double.infinity,
-                decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(5), color: Colors.red),
-                child: Center(
-                  child: Text(
-                    "See numbers",
-                    style: GoogleFonts.inter(
-                        color: Colors.black,
-                        fontSize: 15,
-                        fontWeight: FontWeight.bold),
+    return Scaffold(
+      body: Center(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            ElevatedButton(
+              child: const Text('Show Awesome SnackBar'),
+              onPressed: () {
+                final snackBar = SnackBar(
+                  /// need to set following properties for best effect of awesome_snackbar_content
+                  elevation: 0,
+                  behavior: SnackBarBehavior.floating,
+                  backgroundColor: Colors.transparent,
+                  content: AwesomeSnackbarContent(
+                    title: 'On Snap!',
+                    message:
+                        'This is an example error message that will be shown in the body of snackbar!',
+
+                    /// change contentType to ContentType.success, ContentType.warning or ContentType.help for variants
+                    contentType: ContentType.failure,
                   ),
-                ),
-              ),
-              SizedBox(height: 15,),
-              Container(
-                height: 50,
-                width: double.infinity,
-                decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(0),
-                    color: Colors.yellow),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      "Play again",
-                      style: GoogleFonts.inter(
-                          color: Colors.black,
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold),
-                    ),
-                    Icon(Icons.loop)
-                  ],
-                ),
-              ),
-            ],
-          ),
+                );
+
+                ScaffoldMessenger.of(context)
+                  ..hideCurrentSnackBar()
+                  ..showSnackBar(snackBar);
+              },
+            ),
+            const SizedBox(height: 10),
+            ElevatedButton(
+              child: const Text('Show Awesome Material Banner'),
+              onPressed: () {
+                final materialBanner = MaterialBanner(
+                  /// need to set following properties for best effect of awesome_snackbar_content
+                  elevation: 0,
+                  backgroundColor: Colors.transparent,
+                  forceActionsBelow: true,
+                  content: AwesomeSnackbarContent(
+                    title: 'Oh Hey!!',
+                    message:
+                        'This is an example error message that will be shown in the body of materialBanner!',
+
+                    /// change contentType to ContentType.success, ContentType.warning or ContentType.help for variants
+                    contentType: ContentType.success,
+                    // to configure for material banner
+                    inMaterialBanner: true,
+                  ),
+                  actions: const [SizedBox.shrink()],
+                );
+
+                ScaffoldMessenger.of(context)
+                  ..hideCurrentMaterialBanner()
+                  ..showMaterialBanner(materialBanner);
+              },
+            ),
+            TextFormField(
+              maxLength: 1,
+              controller: _controller1,
+              focusNode: _focusNode1,
+              onChanged: (String value) {
+                if (value.length == 1) {
+                  _focusNode1.unfocus();
+                  FocusScope.of(context).requestFocus(_focusNode2);
+                }
+              },
+            ),
+            TextFormField(
+              maxLength: 1,
+              controller: _controller2,
+              focusNode: _focusNode2,
+              onChanged: (String value) {
+                if (value.length == 1) {
+                  _focusNode2.unfocus();
+                  FocusScope.of(context).requestFocus(_focusNode1);
+                }
+              },
+            ),
+          ],
         ),
-      )),
+      ),
     );
   }
 }
