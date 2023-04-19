@@ -3,7 +3,10 @@ import 'package:flutter/src/widgets/placeholder.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lottie/lottie.dart';
-import 'package:passcode_cracker/pages/game_page.dart';
+
+import 'package:passcode_cracker/welcome_page.dart';
+
+import '../welcome_page.dart';
 
 class GameOverPage extends StatelessWidget {
   final List<int> randomNumbers;
@@ -79,7 +82,7 @@ class GameOverPage extends StatelessWidget {
                     Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => GamePage(),
+                          builder: (context) => WelcomePage(),
                         ));
                   },
                   child: Container(

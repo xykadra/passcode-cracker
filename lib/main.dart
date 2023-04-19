@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:passcode_cracker/pages/game_page.dart';
-import 'package:passcode_cracker/testing.dart';
+
 import 'package:passcode_cracker/welcome_page.dart';
 
 void main() {
