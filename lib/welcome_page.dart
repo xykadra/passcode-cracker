@@ -32,7 +32,7 @@ class _WelcomePageState extends State<WelcomePage> {
     super.initState();
     randomNumbers = _generateRandomNumbers();
   }
-
+  
   void _chekForWin(int correctNumbers, int correctSpots) {
     if (correctNumbers == 4 && correctSpots == 4) {
       Navigator.push(
@@ -146,7 +146,6 @@ class _WelcomePageState extends State<WelcomePage> {
       content: AwesomeSnackbarContent(
         color: Colors.red[350],
         title: 'Oh Hey!!',
-
         message: message,
         messageFontSize: 18,
 
@@ -189,102 +188,7 @@ class _WelcomePageState extends State<WelcomePage> {
               children: [
                 GestureDetector(
                   onTap: () {
-                    showDialog(
-                        context: context,
-                        builder: (context) => AlertDialog(
-                              actions: [
-                                GestureDetector(
-                                  onTap: () {
-                                    Navigator.pop(context);
-                                  },
-                                  child: Container(
-                                    padding: EdgeInsets.all(2),
-                                    height: 40,
-                                    decoration: BoxDecoration(
-                                      color: Colors.black,
-                                      borderRadius: BorderRadius.circular(5),
-                                    ),
-                                    child: Center(
-                                        child: Text(
-                                      "I understood",
-                                      style: GoogleFonts.sourceCodePro(
-                                          color: Colors.white, fontSize: 25),
-                                    )),
-                                  ),
-                                ),
-                                Text(
-                                  "Dev. Mirza Kadrić v01.0 2023",
-                                  style:
-                                      GoogleFonts.sourceCodePro(fontSize: 12),
-                                ),
-                              ],
-                              icon: Icon(Icons.error),
-                              title: Text("How to play PASSCODE CRACKER?"),
-                              content: Column(
-                                children: [
-                                  Text(
-                                    "In the input fields enter numbers in range 1 to 9, and try to crack code!",
-                                    style: GoogleFonts.sourceCodePro(
-                                        color: Colors.black, fontSize: 15),
-                                  ),
-                                  SizedBox(
-                                    height: 5,
-                                  ),
-                                  Text(
-                                    "Game will give you hint how many numbers you did right and how many of them are in right spot.",
-                                    style: GoogleFonts.sourceCodePro(
-                                        color: Colors.black, fontSize: 15),
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal: 50.0),
-                                    child: Divider(
-                                      color: Colors.black,
-                                    ),
-                                  ),
-                                  SizedBox(
-                                    height: 10,
-                                  ),
-                                  Text(
-                                    "RULES",
-                                    style: GoogleFonts.inter(
-                                        color: Colors.black,
-                                        fontSize: 20,
-                                        fontWeight: FontWeight.bold),
-                                  ),
-                                  SizedBox(
-                                    height: 10,
-                                  ),
-                                  Text(
-                                    "1. DO NOT ENTER TWO SAME NUMBERS",
-                                    style: GoogleFonts.inter(
-                                        color: Colors.black, fontSize: 15),
-                                  ),
-                                  SizedBox(
-                                    height: 10,
-                                  ),
-                                  Align(
-                                    alignment: Alignment.bottomLeft,
-                                    child: Text(
-                                      "2. DO NOT ENTER ZERO",
-                                      style: GoogleFonts.interTight(
-                                          color: Colors.black, fontSize: 15),
-                                    ),
-                                  ),
-                                  SizedBox(
-                                    height: 10,
-                                  ),
-                                  Align(
-                                    alignment: Alignment.bottomLeft,
-                                    child: Text(
-                                      "3. DO NOT PRESS TRY WITHOUT INPUTING SOME NUMBERS",
-                                      style: GoogleFonts.interTight(
-                                          color: Colors.black, fontSize: 15),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ));
+                    dialog(context);
                   },
                   child: Container(
                     color: Colors.grey[200],
@@ -524,7 +428,7 @@ class _WelcomePageState extends State<WelcomePage> {
                         num2Controller.text == "" ||
                         num3Controller.text == "" ||
                         num4Controller.text == "") {
-                      _handlingOfEmptyFields("You didn't inputed some values");
+                      _handlingOfEmptyFields("You didn't input some values");
                     } else if (hasTwoSameNumbers(
                             int.parse(num1Controller.text),
                             int.parse(num2Controller.text),
@@ -558,19 +462,18 @@ class _WelcomePageState extends State<WelcomePage> {
                         result.values.first,
                         counterForWidgets,
                       );
+                      _checkForSpotSound(result.values.first);
+                      //adding widgets
+
+                      _chekForWin(result.keys.first, result.values.first);
+                      //function that checks input and returing correct numbers and correct spots
+
+                      //making forms clear
+                      num1Controller.text = "";
+                      num2Controller.text = "";
+                      num3Controller.text = "";
+                      num4Controller.text = "";
                     }
-
-                    _checkForSpotSound(result.values.first);
-                    //adding widgets
-
-                    _chekForWin(result.keys.first, result.values.first);
-                    //function that checks input and returing correct numbers and correct spots
-
-                    //making forms clear
-                    num1Controller.text = "";
-                    num2Controller.text = "";
-                    num3Controller.text = "";
-                    num4Controller.text = "";
                   });
                 },
                 child: Container(
@@ -594,26 +497,123 @@ class _WelcomePageState extends State<WelcomePage> {
             SizedBox(
               height: 10,
             ),
-            // Text(
-            //   "Random number: " + randomNumbers.toString(),
-            //   style: TextStyle(
-            //       color: Colors.black,
-            //       fontSize: 25,
-            //       fontWeight: FontWeight.bold),
-            // ),
-            // Text(counterForWidgets.toString()),
-            // ElevatedButton(
-            //     onPressed: () {
-            //       Navigator.push(
-            //           context,
-            //           MaterialPageRoute(
-            //             builder: (context) => WelcomePage(),
-            //           ));
-            //     },
-            //     child: Text("Go back"))
+            //Uncomment this for debugging
+            Text(
+              "Random number: " + randomNumbers.toString(),
+              style: TextStyle(
+                  color: Colors.black,
+                  fontSize: 25,
+                  fontWeight: FontWeight.bold),
+            ),
+            Text(counterForWidgets.toString()),
+            ElevatedButton(
+                onPressed: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => WelcomePage(),
+                      ));
+                },
+                child: Text("Go back"))
           ],
         ),
       )),
     ));
+  }
+
+  Future<dynamic> dialog(BuildContext context) {
+    return showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+              actions: [
+                GestureDetector(
+                  onTap: () {
+                    Navigator.pop(context);
+                  },
+                  child: Container(
+                    padding: EdgeInsets.all(2),
+                    height: 40,
+                    decoration: BoxDecoration(
+                      color: Colors.black,
+                      borderRadius: BorderRadius.circular(5),
+                    ),
+                    child: Center(
+                        child: Text(
+                      "I understood",
+                      style: GoogleFonts.sourceCodePro(
+                          color: Colors.white, fontSize: 25),
+                    )),
+                  ),
+                ),
+                Text(
+                  "Dev. Mirza Kadrić v01.0 2023",
+                  style: GoogleFonts.sourceCodePro(fontSize: 12),
+                ),
+              ],
+              icon: Icon(Icons.error),
+              title: Text("How to play PASSCODE CRACKER?"),
+              content: Column(
+                children: [
+                  Text(
+                    "In the input fields enter numbers in range 1 to 9, and try to crack code!",
+                    style: GoogleFonts.sourceCodePro(
+                        color: Colors.black, fontSize: 15),
+                  ),
+                  SizedBox(
+                    height: 5,
+                  ),
+                  Text(
+                    "Game will give you hint how many numbers you did right and how many of them are in right spot.",
+                    style: GoogleFonts.sourceCodePro(
+                        color: Colors.black, fontSize: 15),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 50.0),
+                    child: Divider(
+                      color: Colors.black,
+                    ),
+                  ),
+                  SizedBox(
+                    height: 10,
+                  ),
+                  Text(
+                    "RULES",
+                    style: GoogleFonts.inter(
+                        color: Colors.black,
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold),
+                  ),
+                  SizedBox(
+                    height: 10,
+                  ),
+                  Text(
+                    "1. DO NOT ENTER TWO SAME NUMBERS",
+                    style: GoogleFonts.inter(color: Colors.black, fontSize: 15),
+                  ),
+                  SizedBox(
+                    height: 10,
+                  ),
+                  Align(
+                    alignment: Alignment.bottomLeft,
+                    child: Text(
+                      "2. DO NOT ENTER ZERO",
+                      style: GoogleFonts.interTight(
+                          color: Colors.black, fontSize: 15),
+                    ),
+                  ),
+                  SizedBox(
+                    height: 10,
+                  ),
+                  Align(
+                    alignment: Alignment.bottomLeft,
+                    child: Text(
+                      "3. DO NOT PRESS TRY WITHOUT INPUTING SOME NUMBERS",
+                      style: GoogleFonts.interTight(
+                          color: Colors.black, fontSize: 15),
+                    ),
+                  ),
+                ],
+              ),
+            ));
   }
 }
